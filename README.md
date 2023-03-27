@@ -3,7 +3,7 @@ Assignment#2 @ Vaneeza Ahmad i210390, @ Minha Rehman i212534
 
 <h2>ERD Description</h2>
 <u>Tool Used:</u> ERD Plus <br>
-Min-Max notation is used to model constraints and crow-feet notation for cardinality.<br>
+Min-Max notation is used to model constraints.<br>
 
 <h3>Entities and Relationships:</h3>
 <ul><li>Airplane has total participation with Plane_type and Hangar.</li>
