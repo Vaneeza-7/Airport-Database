@@ -155,6 +155,56 @@ create TABLE OWNS
   Foreign key (Own_Name) References CORPORATION (Name)
 );
 
+alter table OWNS
+add Own_Reg# integer,
+Foreign Key (Own_Reg#) references Airplane(Reg#);
+
+SELECT* FROM OWNS
+insert into OWNS values 
+('27-FEB-2023','61101', NULL, 2312);
+insert into OWNS values
+('25-FEB-2023','61102', NULL, 2314);
+insert into OWNS values
+('12-FEB-2023','61103', NULL, 4567);
+insert into OWNS values
+('27-JAN-2023','61104', NULL, 6323);
+insert into OWNS values
+('26-FEB-2023','61105', NULL, 7343);
+insert into OWNS values
+('27-FEB-2023',NULL, 'FUNAVRY', 7355);
+insert into OWNS values
+('14-FEB-2023',NULL, 'FAST', 7366);
+insert into OWNS values
+('22-JAN-2023',NULL, 'FUNAVRY', 7367);
+insert into OWNS values
+('01-JAN-2023',NULL, 'PIA', 7369);
+insert into OWNS values
+('02-FEB-2023',NULL, 'PAF', 7453);
+insert into OWNS values
+('01-FEB-2023',NULL, 'NUST', 7680);
+insert into OWNS values
+('09-FEB-2023',NULL, 'NESCOM', 7689);
+insert into OWNS values
+('08-FEB-2023',NULL, 'FAST', 7856);
+insert into OWNS values
+('06-FEB-2023',NULL, 'PAF', 7890);
+insert into OWNS values
+('29-JAN-2023',NULL, 'Alburhan', 8369);
+insert into OWNS values
+('01-JAN-2023',NULL, 'Aerospace', 8533);
+insert into OWNS values
+('02-JAN-2023',NULL, 'Aeroknow', 8564);
+insert into OWNS values
+('27-DEC-2022',NULL, 'Flyaway', 9009);
+insert into OWNS values
+('26-DEC-2022',NULL, 'HBL', 9099);
+insert into OWNS values
+('25-DEC-2022',NULL, 'Aerocut', 9190);
+insert into OWNS values
+('12-DEC-2022',NULL, 'Stars', 9856);
+
+
+select* from POWNER
 create TABLE Employee
 (
    ESSN CHAR(9) NOT NULL primary key,
@@ -182,6 +232,60 @@ insert into Employee values
 ('61112', 56000, '07:00:00');
 insert into Employee values
 ('61113', 43000, '09:20:30');
+
+create TABLE Maintain
+(
+   Emp_SSN CHAR(9) NOT NULL,
+   Foreign KEY (Emp_SSN) References Employee (ESSN),
+   Mwork_code varchar(9),     -- Employee Work code
+   Airplane_Reg integer, 
+  foreign key (Airplane_Reg) references Airplane(Reg#)
+);
+select* from Maintain
+--drop table Maintain
+select* from PSERVICE
+select* from Employee
+select* from works_on
+select* from of_type
+insert into Maintain values ---
+('61106','1237',7355);
+insert into Maintain values ----
+('61106','1003',9099);
+--insert into Maintain values
+--('61106','1234',7856);
+--insert into Maintain values
+--('61107','1234',2314);
+insert into Maintain values ---
+('61107','1002', 7343);
+insert into Maintain values ---
+('61108','1001',7890);
+insert into Maintain values ----
+('61109','1234',7369);
+insert into Maintain values ----
+('61109','1235',7366);
+insert into Maintain values ---
+('61110','1231',4567);
+insert into Maintain values ---
+('61110','1230',9009);
+insert into Maintain values ---
+('61111','1004',2312);
+insert into Maintain values ---
+('61111','1236',7367);
+--insert into Maintain values
+--('61112','1234',7680);
+--insert into Maintain values
+--('61112','1234',8564);
+insert into Maintain values ---
+('61112','1239',8369);
+insert into Maintain values ---
+('61113','1233',6323);
+insert into Maintain values ---
+('61113','1238',7453);
+
+
+select* from Maintain
+
+
 
 
 create Table Pilot
@@ -609,9 +713,27 @@ INSERT INTO Airplane VALUES
   (Select salary from Employee where (e_shift > '22:00:00' AND e_shift<'23:59:59') or  e_shift  < '6:00:00')
 
   ---QUERY6 Write a SQL query to find the top 5 employees with the highest total number of maintenance hours worked.
-  Select hours as Top_5_Hours_worked, Maintain.Emp_SSN
+  Select top 5 hours as Top_5_Hours_worked, Maintain.Emp_SSN
    from PSERVICE  inner join Maintain on
    PService.plane_service = Maintain.Airplane_Reg 
    order by hours desc
 
-   select* from PSERVICE
+   --QUERY7 Write a SQL query to find the names and registration numbers of airplanes that have undergone maintenance in the past week.
+   SELECT Airplane_type_Reg# As Reg#, Plane_Type.Model As Name from of_type inner join dbo.Plane_Type on dbo.of_type.Planetype_Model=dbo.Plane_Type.Model
+   where Airplane_type_Reg# in (Select Reg# from Airplane inner join dbo.PSERVICE on dbo.Airplane.Reg#=dbo.PSERVICE.plane_service 
+   where PSERVICE.Sdate < '27-MAR-2023' and PSERVICE.Sdate > '20-MAR-2023')
+
+   --QUERY8 Write a SQL query to find the names and phone numbers of all owners who have purchased a plane in the past month.
+   select PERSON.Phone, PERSON.Name from POWNER inner join dbo.PERSON on POWNER.SSN=PERSON.SSN 
+   where POWNER.OWNS in
+   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<'01-MAR-2023');
+   select POWNER.Name, CORPORATION.Phone from POWNER inner join dbo.CORPORATION on POWNER.Name=CORPORATION.Name 
+   where POWNER.OWNS in
+   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<'01-MAR-2023');
+  
+ 
+  --QUERY10 Write a SQL query to find the location and capacity of the hangar with the most available space.
+  SELECT COUNT(HNumber) , count(Hangar.Number) from stored_in inner join Hangar on dbo.stored_in.HNumber= dbo.Hangar.Number 
+  where HNumber=10
+
+  select Number from Hangar
