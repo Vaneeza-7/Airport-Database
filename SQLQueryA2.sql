@@ -724,16 +724,127 @@ INSERT INTO Airplane VALUES
    where PSERVICE.Sdate < '27-MAR-2023' and PSERVICE.Sdate > '20-MAR-2023')
 
    --QUERY8 Write a SQL query to find the names and phone numbers of all owners who have purchased a plane in the past month.
-   select PERSON.Phone, PERSON.Name from POWNER inner join dbo.PERSON on POWNER.SSN=PERSON.SSN 
+   select PERSON.Name, PERSON.Phone from POWNER inner join dbo.PERSON on POWNER.SSN=PERSON.SSN 
    where POWNER.OWNS in
-   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<'01-MAR-2023');
+   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<GETDATE())
+   union 
    select POWNER.Name, CORPORATION.Phone from POWNER inner join dbo.CORPORATION on POWNER.Name=CORPORATION.Name 
    where POWNER.OWNS in
-   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<'01-MAR-2023');
+   (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<GETDATE());
   
+  ---another approach
+    select distinct Name, Phone from CORPORATION,OWNS O  where O.Purchase_Date < GETDATE()
+
+
+   --QUERY9 Write a SQL query to find the number of airplanes each pilot is authorized to fly.
+    select count(Plane_fly_Model) As Planes_Authorized, Pilot_Lic_num 
+	from flies
+	group by Pilot_Lic_num
  
   --QUERY10 Write a SQL query to find the location and capacity of the hangar with the most available space.
   SELECT COUNT(HNumber) , count(Hangar.Number) from stored_in inner join Hangar on dbo.stored_in.HNumber= dbo.Hangar.Number 
-  where HNumber=10
+  where HNumber=1
 
-  select Number from Hangar
+  --alter table Hangar
+  --drop column NumberOfPlanes;
+  --alter table Hangar
+  --drop column Hnum;
+
+  CREATE TABLE Pspace
+  (
+  NumberOfPlanes integer,
+  num integer,
+  capac integer
+  )
+  drop table Pspace
+  --UNION
+
+  Insert into Pspace (NumberofPlanes, num)
+  SELECT COUNT(Airplane_Reg#) as NumberOfPlanes, HNumber 
+  FROM stored_in
+  GROUP BY HNumber
+  
+  Insert into Pspace (capac)
+  Select HCapacity from Hangar
+
+  Select Location, HCapacity, HCAPACITY - NumberOfPlanes as AvailableSpace from Hangar
+
+  --ORDER BY COUNT(Airplane_Reg#) DESC;)
+  as subtracted
+
+
+  select * from Pspace
+  select* from stored_in
+
+
+---QUERY11  Write a SQL query to find the number of planes owned by each corporation, sorted in
+--descending order by number of planes.
+   SELECT COUNT(Own_Reg#) as NumberOfPlanes, Own_Name as Corporation
+   FROM OWNS
+   where Own_Name is not Null
+   GROUP BY Own_Name 
+   order by NumberOfPlanes desc
+
+---QUERY12 Write a SQL query to find the average number of maintenance hours per plane, broken
+--down by plane type. 
+   SELECT AVG(Hours) as Avg_Maintainence_hrs, plane_service as PlaneREG#, of_type.Planetype_Model FROM PSERVICE inner join of_type on PSERVICE.plane_service=of_type.Airplane_type_Reg#
+   GROUP BY plane_service, Planetype_Model 
+   
+--QUERY13 Write a SQL query to find the names of owners who have purchased a plane that
+--requires maintenance work from an employee who is not qualified to work on that type of plane.
+
+select* from Employee
+select* from Maintain
+
+---QUERY14. Write a SQL query to find the names and phone numbers of owners who have 
+--purchased a plane from a corporation that has a hangar in the same location as the owner.
+  select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
+  (Select Hangar.Location from Hangar inner join CORPORATION on CORPORATION.Address=Hangar.Location Where CORPORATION.Address=Hangar.Location)
+
+
+  select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
+  (select Address FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
+  (select Reg# from Airplane inner join stored_in on Airplane.Reg#=stored_in.Airplane_Reg# where stored_in.HNumber in 
+  (Select Hangar.Number from Hangar inner join PERSON on PERSON.Address=Hangar.Location where PERSON.Address=Hangar.Location)))
+
+  
+  select PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN 
+  union
+  (select Name, Phone FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
+  (select Reg# from Airplane inner join stored_in on Airplane.Reg#=stored_in.Airplane_Reg# where stored_in.HNumber in 
+  (Select Hangar.Number from Hangar inner join PERSON on PERSON.Address=Hangar.Location where PERSON.Address=Hangar.Location)))
+
+
+  --Q # 17
+--select * from OWNS
+select Own_Reg# as Reg# from OWNS
+where Own_Name is NULL 
+
+union
+(select Airplane_Reg as Reg# from Maintain m inner join
+Employee e on e.ESSN = m.Emp_SSN
+where e_shift < '18:00:00')
+
+--Q 19
+select count(Airplane_Reg#) As Total_planes,HNumber
+from stored_in
+group by HNumber
+
+--Q 20
+select count(Airplane_type_Reg#) As Total_planes,Planetype_Model
+from of_type
+group by Planetype_Model
+
+--Q # 21
+select count(work_code)As No_of_Services, plane_service as Plane_Reg# 
+from PSERVICE 
+group by plane_service
+
+--Q#22
+select AVG(salary) as Avg_Salaray,e_shift
+from Employee 
+group by e_shift
+-- Q # 23
+select count(Own_Reg#) As No_of_Planes, Own_SSN, Own_Name 
+from OWNS
+group by Own_Name,Own_SSN
