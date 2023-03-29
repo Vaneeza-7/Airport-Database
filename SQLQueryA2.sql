@@ -52,9 +52,6 @@ insert into PERSON values
 ('minha8', 'Lahore', '61120', 1298);
 
 
-
-
-
 create TABLE CORPORATION
 (
   Name VARCHAR(9),
@@ -102,7 +99,7 @@ create TABLE POWNER
   FOREIGN KEY (OWNS) REFERENCES Airplane(Reg#)
 );
 
-SELECT* FROM POWNER
+--SELECT* FROM POWNER
 insert into POWNER values
 ('61101', NULL, 2312);
 insert into POWNER values
@@ -151,15 +148,17 @@ create TABLE OWNS
   Purchase_Date date,
   Own_SSN CHAR(9) ,
   Own_Name VARCHAR(9) ,
+  Own_Reg# integer,
+  Foreign Key (Own_Reg#) references Airplane(Reg#),
   Foreign KEY (Own_SSN) References PERSON (SSN),
   Foreign key (Own_Name) References CORPORATION (Name)
 );
 
-alter table OWNS
-add Own_Reg# integer,
-Foreign Key (Own_Reg#) references Airplane(Reg#);
+--alter table OWNS
+--add Own_Reg# integer,
+--Foreign Key (Own_Reg#) references Airplane(Reg#);
 
-SELECT* FROM OWNS
+--SELECT* FROM OWNS
 insert into OWNS values 
 ('27-FEB-2023','61101', NULL, 2312);
 insert into OWNS values
@@ -204,7 +203,7 @@ insert into OWNS values
 ('12-DEC-2022',NULL, 'Stars', 9856);
 
 
-select* from POWNER
+--select* from POWNER
 create TABLE Employee
 (
    ESSN CHAR(9) NOT NULL primary key,
@@ -241,12 +240,16 @@ create TABLE Maintain
    Airplane_Reg integer, 
   foreign key (Airplane_Reg) references Airplane(Reg#)
 );
+
+
 select* from Maintain
 --drop table Maintain
 select* from PSERVICE
 select* from Employee
 select* from works_on
 select* from of_type
+
+
 insert into Maintain values ---
 ('61106','1237',7355);
 insert into Maintain values ----
@@ -283,11 +286,6 @@ insert into Maintain values ---
 ('61113','1238',7453);
 
 
-select* from Maintain
-
-
-
-
 create Table Pilot
 (
    Pilot_SSN CHAR(9) NOT NULL ,
@@ -295,7 +293,9 @@ create Table Pilot
    Lic_num varchar(9) NOT NULL primary key,
    Restr  varchar(30)
 );
-SELECT* FROM Pilot
+
+--SELECT* FROM Pilot
+
 insert into Pilot values
 ('61114', 3333, 'ANTONOV');
 insert into Pilot values
@@ -320,8 +320,8 @@ create Table Plane_Type
   --of_type varchar(20)
 );
 
-alter table Plane_Type
-drop column of_type ;
+--alter table Plane_Type
+--drop column of_type ;
 
 create Table works_on
 (
@@ -347,7 +347,6 @@ insert into works_on values
 ('61112', 'ARMSTRONG');
 insert into works_on values
 ('61113', 'CRJ');
-
 insert into works_on values
 ('61106', 'BEECHCRAF');
 insert into works_on values
@@ -373,7 +372,9 @@ create Table flies
     Plane_fly_Model varchar(9) NOT NULL,
   Foreign KEY (Plane_fly_Model) References Plane_Type (Model),
 );
-select* from pilot
+
+--select* from pilot
+
 insert into flies values
 ('3333', 'EMBRAER');
 insert into flies values
@@ -390,7 +391,6 @@ insert into flies values
 ('3339', 'ARMSTRONG');
 insert into flies values
 ('3333', 'CRJ');
-
 insert into flies values
 ('3334', 'BEECHCRAF');
 insert into flies values
@@ -412,6 +412,7 @@ create Table Airplane
 (
   Reg# integer NOT NULL primary key
 );
+
 create Table Hangar
 (
   HCAPACITY integer,
@@ -426,6 +427,7 @@ create Table of_type
   Airplane_type_Reg# integer NOT NULL,
    Foreign KEY (Airplane_type_Reg#) References Airplane (Reg#),
 );
+
 create Table stored_in
 (
   HNumber integer NOT NULL ,
@@ -536,6 +538,7 @@ select* from Employee
 select* from OWNS
 select* from CORPORATION
 select* from PERSON
+select* from Maintain
 
 
 
@@ -566,13 +569,13 @@ INSERT INTO PSERVICE VALUES
 INSERT INTO PSERVICE VALUES
 (5, 1004, CONVERT(DATE, '24-MAR-2023'), 2312);
 
-
-INSERT INTO POWNER VALUES
-('1111', NULL, 2312);
-INSERT INTO POWNER VALUES
-('2111', NULL, 2314);
-INSERT INTO POWNER VALUES
-('3111', NULL, 4567);
+--values not used---
+--INSERT INTO POWNER VALUES
+--('1111', NULL, 2312);
+--INSERT INTO POWNER VALUES
+--('2111', NULL, 2314);
+--INSERT INTO POWNER VALUES
+--('3111', NULL, 4567);
 
 
 insert into hangar values
@@ -732,8 +735,8 @@ INSERT INTO Airplane VALUES
    where POWNER.OWNS in
    (select  Own_Reg# from OWNS where OWNS.Purchase_Date > '01-FEB-2023' and OWNS.Purchase_Date<GETDATE());
   
-  ---another approach
-    select distinct Name, Phone from CORPORATION,OWNS O  where O.Purchase_Date < GETDATE()
+  ---another approach for query 8 (just shows corporation name)
+    --select distinct Name, Phone from CORPORATION,OWNS O  where O.Purchase_Date < GETDATE()
 
 
    --QUERY9 Write a SQL query to find the number of airplanes each pilot is authorized to fly.
@@ -745,38 +748,32 @@ INSERT INTO Airplane VALUES
   SELECT COUNT(HNumber) , count(Hangar.Number) from stored_in inner join Hangar on dbo.stored_in.HNumber= dbo.Hangar.Number 
   where HNumber=1
 
+    Select Location, HCAPACITY from Hangar 
+	where Hangar.HCAPACITY = (Select MAX(HCAPACITY) from Hangar)
   --alter table Hangar
   --drop column NumberOfPlanes;
   --alter table Hangar
   --drop column Hnum;
-
-  CREATE TABLE Pspace
-  (
-  NumberOfPlanes integer,
-  num integer,
-  capac integer
-  )
-  drop table Pspace
+  select* from Hangar 
+  --CREATE TABLE Pspace
+  --(
+  --NumberOfPlanes integer,
+  --num integer,
+  --capac integer
+  --)
+  --drop table Pspace
   --UNION
 
-  Insert into Pspace (NumberofPlanes, num)
+  --Insert into Pspace (NumberofPlanes, num)
   SELECT COUNT(Airplane_Reg#) as NumberOfPlanes, HNumber 
   FROM stored_in
   GROUP BY HNumber
   
-  Insert into Pspace (capac)
-  Select HCapacity from Hangar
-
-  Select Location, HCapacity, HCAPACITY - NumberOfPlanes as AvailableSpace from Hangar
-
+  --Insert into Pspace (capac)
+  --Select HCapacity from Hangar
+  --Select Location, HCapacity, HCAPACITY - NumberOfPlanes as AvailableSpace from Hangar
   --ORDER BY COUNT(Airplane_Reg#) DESC;)
-  as subtracted
-
-
-  select * from Pspace
-  select* from stored_in
-
-
+ 
 ---QUERY11  Write a SQL query to find the number of planes owned by each corporation, sorted in
 --descending order by number of planes.
    SELECT COUNT(Own_Reg#) as NumberOfPlanes, Own_Name as Corporation
@@ -793,58 +790,124 @@ INSERT INTO Airplane VALUES
 --QUERY13 Write a SQL query to find the names of owners who have purchased a plane that
 --requires maintenance work from an employee who is not qualified to work on that type of plane.
 
-select* from Employee
-select* from Maintain
+select Own_Name from Maintain m
+inner join of_type o on m.Airplane_Reg = o.Airplane_type_Reg#
+inner join works_on w on w.Plane_Model != o.Planetype_Model
+inner join OWNS ow on ow.Own_Reg# = o.Airplane_type_Reg#
+where m.Emp_SSN = w.work_emp_SSN AND o.Planetype_Model
+!= w.Plane_Model
+
 
 ---QUERY14. Write a SQL query to find the names and phone numbers of owners who have 
 --purchased a plane from a corporation that has a hangar in the same location as the owner.
+  
+  --approach1
   select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
   (Select Hangar.Location from Hangar inner join CORPORATION on CORPORATION.Address=Hangar.Location Where CORPORATION.Address=Hangar.Location)
 
-
+  --approach2
   select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
   (select Address FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
   (select Reg# from Airplane inner join stored_in on Airplane.Reg#=stored_in.Airplane_Reg# where stored_in.HNumber in 
   (Select Hangar.Number from Hangar inner join PERSON on PERSON.Address=Hangar.Location where PERSON.Address=Hangar.Location)))
 
-  
+  ---approach3
   select PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN 
   union
   (select Name, Phone FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
   (select Reg# from Airplane inner join stored_in on Airplane.Reg#=stored_in.Airplane_Reg# where stored_in.HNumber in 
   (Select Hangar.Number from Hangar inner join PERSON on PERSON.Address=Hangar.Location where PERSON.Address=Hangar.Location)))
 
+  --QUERY15 Write a SQL query to find the names of pilots who are qualified to fly a plane that is currently undergoing maintenance.
+   select Name from PERSON p
+   inner join Pilot pi on
+   p.SSN = pi.Pilot_SSN inner
+   join flies f on pi.Lic_num = 
+   f.Pilot_Lic_num inner join 
+   of_type o on f.Plane_fly_Model =
+   o.Planetype_Model inner join PService s
+   on o.Airplane_type_Reg# = s.plane_service
+   where s.Sdate = GETDATE();
 
-  --Q # 17
---select * from OWNS
+   --Query # 16 Write a SQL query to find the names of employees who have worked on planes owned
+-- by a particular corporation, sorted by the total number of maintenance hours worked.
+ select Name, s.Hours as "Total_Hours_worked" from PERSON p 
+ inner join Maintain m on 
+ p.SSN = m.Emp_SSN inner join 
+ PService s on m.Airplane_Reg = s.plane_service
+ inner join OWNS o on 
+ s.plane_service = o.Own_Reg# 
+ order by s.Hours desc
+
+ 
+  --Query17
 select Own_Reg# as Reg# from OWNS
 where Own_Name is NULL 
-
 union
 (select Airplane_Reg as Reg# from Maintain m inner join
 Employee e on e.ESSN = m.Emp_SSN
 where e_shift < '18:00:00')
 
---Q 19
+---QUERY18 Write a SQL query to find the names and addresses of owners who have purchased a
+-- plane from a corporation that has also purchased a plane of the same type in the past month.
+
+select POWNER.Name, Address from POWNER inner join PERSON on PERSON.Name=POWNER.Name where POWNER.Name in
+(Select POWNER.Name from POWNER inner join OWNS on OWNS.Own_Name=POWNER.Name where OWNS.Purchase_Date in 
+(Select Purchase_Date from POWNER where Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023')
+)
+Select POWNER.Name from POWNER inner join OWNS on POWNER.OWNS=OWNS.Own_Reg#
+--where OWNS.Own_Reg# in ( Select Airplane_type_Reg# from of_type inner join pl
+
+select* from OWNS
+select* from POWNER
+
+--Query19
 select count(Airplane_Reg#) As Total_planes,HNumber
 from stored_in
 group by HNumber
 
---Q 20
+--Query20
 select count(Airplane_type_Reg#) As Total_planes,Planetype_Model
 from of_type
 group by Planetype_Model
 
---Q # 21
+--Query21
 select count(work_code)As No_of_Services, plane_service as Plane_Reg# 
 from PSERVICE 
 group by plane_service
 
---Q#22
+--Query22
 select AVG(salary) as Avg_Salaray,e_shift
 from Employee 
 group by e_shift
--- Q # 23
+
+-- Query23
 select count(Own_Reg#) As No_of_Planes, Own_SSN, Own_Name 
 from OWNS
 group by Own_Name,Own_SSN
+
+--QUERY25 USEFUL SELF MADE QUERIES
+
+--query1 to count number of planeTYPES in each Hangar
+select count(Planetype_Model) As No_of_Models, HNumber from of_type inner join stored_in on of_type.Airplane_type_Reg#=stored_in.Airplane_Reg#
+group by HNumber
+
+--query2 to find the plane registration number a pilot is not allowed to fly
+select Pilot_SSN, Airplane_type_Reg# as Cannot_fly_Plane_Reg# from Pilot inner join of_type on of_type.Planetype_Model=Pilot.Restr
+
+--query3 to find the plane Registration number a pilot is allowed to fly
+select Pilot_Lic_num, Airplane_type_Reg# as Can_fly_Plane_Reg# from flies inner join of_type on of_type.Planetype_Model=flies.Plane_fly_Model
+
+--query4 to find Pilots who live in same location where their is hangar of the plane they are authorized to fly
+ 
+select Pilot_SSN from Pilot inner join PERSON on PERSON.SSN = Pilot_SSN where Pilot.Lic_num in 
+(select Pilot_Lic_num from flies inner join of_type on of_type.Planetype_Model=flies.Plane_fly_Model where of_type.Airplane_type_Reg# in
+(select Airplane_Reg# from stored_in where HNumber in (Select HNumber from Hangar inner join PERSON on PERSON.Address= Hangar.Location)))
+
+select* from stored_in
+select* from of_type
+select* from Pilot
+select* from flies
+select* from Hangar
+select * from PERSON
+select* from stored_in
