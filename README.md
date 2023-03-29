@@ -29,7 +29,8 @@ When person is owner, the Corporation Name column is NULL and vice versa. <br>
 For weak entity, the primary key of Airplane (on which service is dependent) was included as foreign key.
 
 <h2>Relational Database Description</h2>
-The database relational diagram has been provided. Each entity and relationship has been mapped to a table.
+The database relational diagram has been provided. Each entity and relationship has been mapped to a table. <br>
+Some challenges were faced during Query 13, 14 and 18. These were solved by adding multiple joins, subqueries and using union.
 
 ## A View of the Database
 <p float="left">
