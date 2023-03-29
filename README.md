@@ -33,9 +33,9 @@ The database relational diagram has been provided. Each entity and relationship 
 
 ## A View of the Database
 <p float="left">
-<img src="https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc5.png" width="800">
-<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc4.png width="600">
-<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc3.png width="600">
-<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc2.png width="600">
-<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc1.png width="600">
+<img src="https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc5.png" width="800" height ="300">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc4.png width="800">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc3.png width="800">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc2.png width="800">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc1.png width="800">
 </p>
