@@ -33,9 +33,9 @@ The database relational diagram has been provided. Each entity and relationship 
 
 ## A View of the Database
 <p float="left">
-<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc5.png" width="200">
-<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc4.png" width="200">
-<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc3.png" width="200">
-<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc2.png" width="200">
-<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc1.png" width="200">
+<img src="https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc5.png" width="200">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc4.png width="200">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc3.png width="200">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc2.png width="200">
+<img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc1.png width="200">
 </p>
