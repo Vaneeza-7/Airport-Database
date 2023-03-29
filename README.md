@@ -24,8 +24,18 @@ Min-Max notation is used to model constraints.<br>
 <li>Modelling Service as a weak entity.</li></ul>
 
 <h3>Solutions:</h3>
-For specialization, the key attributes of Sub-Classes (SSN of Person and Name of Corporation), were included in the table of Airplane.<br> 
-When person is owner, the Corporation Name column is NULL and vice versa.
+For specialization; person, corporation, and owner tables are made. Where Owner contains the ssn of person owner and name of corporation owner.<br> 
+When person is owner, the Corporation Name column is NULL and vice versa. <br>
+For weak entity, the primary key of Airplane (on which service is dependent) was included as foreign key.
 
 <h2>Relational Database Description</h2>
+The database relational diagram has been provided. Each entity and relationship has been mapped to a table.
 
+## A View of the Database
+<p float="left">
+<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc5.png" width="200">
+<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc4.png" width="200">
+<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc3.png" width="200">
+<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc2.png" width="200">
+<img src="C:\Users\Vaneeza Ahmad\OneDrive\Spring2023_semester4\Database\DB_Assignment2\screenshots\sc1.png" width="200">
+</p>
