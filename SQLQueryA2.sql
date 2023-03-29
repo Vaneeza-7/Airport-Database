@@ -745,16 +745,13 @@ INSERT INTO Airplane VALUES
 	group by Pilot_Lic_num
  
   --QUERY10 Write a SQL query to find the location and capacity of the hangar with the most available space.
-  SELECT COUNT(HNumber) , count(Hangar.Number) from stored_in inner join Hangar on dbo.stored_in.HNumber= dbo.Hangar.Number 
-  where HNumber=1
-
-    Select Location, HCAPACITY from Hangar 
-	where Hangar.HCAPACITY = (Select MAX(HCAPACITY) from Hangar)
-  --alter table Hangar
-  --drop column NumberOfPlanes;
-  --alter table Hangar
-  --drop column Hnum;
-  select* from Hangar 
+   Select Location, HCAPACITY from Hangar 
+   where Hangar.HCAPACITY = (Select MAX(HCAPACITY) from Hangar)
+  
+   SELECT COUNT(Airplane_Reg#) as NumberOfPlanes, HNumber 
+   FROM stored_in
+   GROUP BY HNumber
+  
   --CREATE TABLE Pspace
   --(
   --NumberOfPlanes integer,
@@ -763,12 +760,7 @@ INSERT INTO Airplane VALUES
   --)
   --drop table Pspace
   --UNION
-
   --Insert into Pspace (NumberofPlanes, num)
-  SELECT COUNT(Airplane_Reg#) as NumberOfPlanes, HNumber 
-  FROM stored_in
-  GROUP BY HNumber
-  
   --Insert into Pspace (capac)
   --Select HCapacity from Hangar
   --Select Location, HCapacity, HCAPACITY - NumberOfPlanes as AvailableSpace from Hangar
@@ -801,17 +793,14 @@ where m.Emp_SSN = w.work_emp_SSN AND o.Planetype_Model
 ---QUERY14. Write a SQL query to find the names and phone numbers of owners who have 
 --purchased a plane from a corporation that has a hangar in the same location as the owner.
   
-  --approach1
-  select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
-  (Select Hangar.Location from Hangar inner join CORPORATION on CORPORATION.Address=Hangar.Location Where CORPORATION.Address=Hangar.Location)
-
-  --approach2
+  
+  --approach1--gives person owners only
   select POWNER.SSN, PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN where PERSON.Address in
   (select Address FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
   (select Reg# from Airplane inner join stored_in on Airplane.Reg#=stored_in.Airplane_Reg# where stored_in.HNumber in 
   (Select Hangar.Number from Hangar inner join PERSON on PERSON.Address=Hangar.Location where PERSON.Address=Hangar.Location)))
 
-  ---approach3
+  ---approach3---BEST ONE--gives all owners
   select PERSON.Name, Person.Phone  from POWNER inner join PERSON on POWNER.SSN=PERSON.SSN 
   union
   (select Name, Phone FROM CORPORATION INNER JOIN OWNS on CORPORATION.Name=OWNS.Own_Name WHERE OWNS.Own_Reg# in 
@@ -840,7 +829,8 @@ where m.Emp_SSN = w.work_emp_SSN AND o.Planetype_Model
  order by s.Hours desc
 
  
-  --Query17
+--Query17 Write a SQL query to find the names and registration numbers of airplanes that have
+-- never been owned by a corporation or undergone maintenance work from an employee who works the day shift.
 select Own_Reg# as Reg# from OWNS
 where Own_Name is NULL 
 union
@@ -851,40 +841,60 @@ where e_shift < '18:00:00')
 ---QUERY18 Write a SQL query to find the names and addresses of owners who have purchased a
 -- plane from a corporation that has also purchased a plane of the same type in the past month.
 
-select POWNER.Name, Address from POWNER inner join PERSON on PERSON.Name=POWNER.Name where POWNER.Name in
-(Select POWNER.Name from POWNER inner join OWNS on OWNS.Own_Name=POWNER.Name where OWNS.Purchase_Date in 
-(Select Purchase_Date from POWNER where Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023')
-)
-Select POWNER.Name from POWNER inner join OWNS on POWNER.OWNS=OWNS.Own_Reg#
---where OWNS.Own_Reg# in ( Select Airplane_type_Reg# from of_type inner join pl
+--approach1-- 
+Select POWNER. Name, Address from POWNER inner join PERSON on PERSON.Name=POWNER.Name  
+inner join OWNS on POWNER.OWNS=OWNS.Own_Reg# where Own_Reg# in
+(select Airplane_type_Reg# from of_type where Planetype_Model in
+(Select Planetype_Model from of_type inner join OWNS on OWNS.Own_Reg#=of_type.Airplane_type_Reg# where OWNS.Purchase_Date in 
+(Select Purchase_Date from POWNER where Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023')))
+union
+Select POWNER. Name, Address from POWNER inner join CORPORATION on CORPORATION.Name=POWNER.Name  
+inner join OWNS on POWNER.OWNS=OWNS.Own_Reg# where Own_Reg# in
+(select Airplane_type_Reg# from of_type where Planetype_Model in
+(Select Planetype_Model from of_type inner join OWNS on OWNS.Own_Reg#=of_type.Airplane_type_Reg# where OWNS.Purchase_Date in 
+(Select Purchase_Date from POWNER where Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023')))
 
-select* from OWNS
-select* from POWNER
+--approach2 ---BEST ONE----gives names of all owners---
+select Own_Name, Address from OWNS o inner join CORPORATION on CORPORATION.Name=o.Own_Name 
+ inner join of_type f
+ on o.Own_Reg# = f.Airplane_type_Reg#
+ where o.Own_SSN IS NULL and o.Own_Reg# =
+ f.Airplane_type_Reg# and Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023'
+ union
+select Own_Name, Address from OWNS o inner join PERSON on PERSON.Name=o.Own_Name 
+ inner join of_type f
+ on o.Own_Reg# = f.Airplane_type_Reg#
+ where o.Own_SSN IS NULL and o.Own_Reg# =
+ f.Airplane_type_Reg# and Purchase_Date<GETDATE() and Purchase_Date>'01-FEB-2023'
 
---Query19
+--Query19 Write a Query to find the total number of planes stored in each hangar.
 select count(Airplane_Reg#) As Total_planes,HNumber
 from stored_in
 group by HNumber
 
---Query20
+--Query20  Write a Query to find the total number of planes of each plane type.
 select count(Airplane_type_Reg#) As Total_planes,Planetype_Model
 from of_type
 group by Planetype_Model
 
---Query21
+--Query21 Write a Query to find the total number of services performed on each plane.
 select count(work_code)As No_of_Services, plane_service as Plane_Reg# 
 from PSERVICE 
 group by plane_service
 
---Query22
+--Query22 Write a Query to find the average salary of employees in each shift.
 select AVG(salary) as Avg_Salaray,e_shift
 from Employee 
 group by e_shift
 
--- Query23
+-- Query23 Write a Query to find the total number of planes each owner owns.
 select count(Own_Reg#) As No_of_Planes, Own_SSN, Own_Name 
 from OWNS
 group by Own_Name,Own_SSN
+
+--Query24 Write a Query to find the number of planes each pilot is authorized to fly.
+select COUNT(Airplane_type_Reg#) as Number_of_planes, Pilot_Lic_num from flies inner join of_type on of_type.Planetype_Model=flies.Plane_fly_Model
+group by Pilot_Lic_num
 
 --QUERY25 USEFUL SELF MADE QUERIES
 
@@ -903,11 +913,3 @@ select Pilot_Lic_num, Airplane_type_Reg# as Can_fly_Plane_Reg# from flies inner 
 select Pilot_SSN from Pilot inner join PERSON on PERSON.SSN = Pilot_SSN where Pilot.Lic_num in 
 (select Pilot_Lic_num from flies inner join of_type on of_type.Planetype_Model=flies.Plane_fly_Model where of_type.Airplane_type_Reg# in
 (select Airplane_Reg# from stored_in where HNumber in (Select HNumber from Hangar inner join PERSON on PERSON.Address= Hangar.Location)))
-
-select* from stored_in
-select* from of_type
-select* from Pilot
-select* from flies
-select* from Hangar
-select * from PERSON
-select* from stored_in
