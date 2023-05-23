@@ -1,5 +1,5 @@
 # Airport-Database
-Assignment#2 @ Vaneeza Ahmad i210390, @ Minha Rehman i212534
+Assignment#2 @ Database Systems Course
 
 <h2>ERD Description</h2>
 <u>Tool Used:</u> ERD Plus <br>
