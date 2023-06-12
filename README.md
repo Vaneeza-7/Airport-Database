@@ -40,3 +40,7 @@ Some challenges were faced during Query 13, 14 and 18. These were solved by addi
 <img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc2.png width="800">
 <img src=https://github.com/Vaneeza-7/Airport-Database/blob/master/screenshots/sc1.png width="800">
 </p>
+
+## Authors
+- [Vaneeza](https://github.com/Vaneeza-7)
+- [Minha](https://github.com/Minha-Attique)
