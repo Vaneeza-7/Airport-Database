@@ -44,3 +44,6 @@ Some challenges were faced during Query 13, 14 and 18. These were solved by addi
 ## Authors
 - [Vaneeza](https://github.com/Vaneeza-7)
 - [Minha](https://github.com/Minha-Attique)
+
+## License
+This project is licensed under the [MIT License](LICENSE).
